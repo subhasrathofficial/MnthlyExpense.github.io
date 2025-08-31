@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Monthly Expense Tracker with XML Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root{ --bg:#0e1117; --panel:#161b22; --text:#e6edf3; --muted:#8b949e; --accent:#2f81f7; --danger:#ff6b6b; --ok:#2ea043; --warn:#d29922; --br:12px; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{padding:18px 16px;border-bottom:1px solid #30363d;background:#0d1117;position:sticky;top:0;z-index:9}
+    header h1{margin:0;font-size:20px}
+    .wrap{display:grid;grid-template-columns:340px 1fr;gap:16px;padding:16px}
+    @media (max-width: 980px){.wrap{grid-template-columns:1fr}}
+    .card{background:var(--panel);border:1px solid #30363d;border-radius:var(--br);padding:14px}
+    .card h2{margin:0 0 10px 0;font-size:16px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    label{font-size:12px;color:var(--muted)}
+    input,select,button,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #30363d;background:#0d1117;color:var(--text)}
+    input[type="number"]{appearance:textfield}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    button.primary{background:var(--accent);border-color:transparent;cursor:pointer}
+    button.ghost{background:transparent;border-color:#30363d;cursor:pointer}
+    button.danger{background:var(--danger);border-color:transparent}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    @media (max-width: 760px){.stats{grid-template-columns:repeat(2,1fr)}}
+    .stat{background:#0d1117;border:1px dashed #30363d;border-radius:10px;padding:10px}
+    .stat small{display:block;color:var(--muted)}
+    .stat b{font-size:18px}
+    table{width:100%;border-collapse:collapse;border-spacing:0}
+    th,td{padding:10px;border-bottom:1px solid #30363d;font-size:14px}
+    th{text-align:left;color:var(--muted);font-weight:600}
+    tr:hover td{background:#0f131a}
+    .pill{padding:2px 8px;border-radius:999px;background:#0d1117;border:1px solid #30363d;color:var(--muted);font-size:12px}
+    .footer-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .hint{color:var(--muted);font-size:12px}
+    .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media (max-width: 980px){.charts{grid-template-columns:1fr}}
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      background: var(--panel);
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      color: var(--text);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .xml-editor {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 10px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      height: 200px;
+      overflow: auto;
+    }
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #30363d;
+      margin-bottom: 10px;
+    }
+    .tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      margin-right: 4px;
+    }
+    .tab.active {
+      background: var(--panel);
+      border-color: #30363d;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Monthly Expense Tracker with XML Editor</h1>
+  </header>
+
+  <div class="wrap">
+    <!-- Left: Input and Filters -->
+    <section class="card">
+      <h2>Add Expense</h2>
+      <div class="grid-2">
+        <div>
+          <label>Type</label>
+          <select id="type">
+            <option value="Credit Card">Credit Card</option>
+            <option value="Personal Loan">Personal Loan</option>
+            <option value="Gold Loans">Gold Loans</option>
+            <option value="Assets">Assets</option>
+            <option value="Income">Income</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label>Category</label>
+          <select id="category">
+            <option value="Recharge/Bills">Recharge/Bills</option>
+            <option value="Subscriptions">Subscriptions</option>
+            <option value="EMI">EMI</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Loans Given/Taken">Loans Given/Taken</option>
+            <option value="Investments">Investments</option>
+            <option value="Salary">Salary</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:10px">
+        <div>
+          <label>Account</label>
+          <select id="account">
+            <option value="HDFC Bank">HDFC Bank</option>
+            <option value="ICICI Bank">ICICI Bank</option>
+            <option value="SBI Bank">SBI Bank</option>
+            <option value="Kotak Bank">Kotak Bank</option>
+            <option value="Bank Of Baroda">Bank Of Baroda</option>
+            <option value="Axis Bank">Axis Bank</option>
+            <option value="Yes Bank">Yes Bank</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label>Date</label>
+          <input id="date" type="date" />
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <label>Description</label>
+        <input id="desc" placeholder="e.g., BSNL Recharge" />
+      </div>
+      <div style="margin-top:10px">
+        <label>Amount</label>
+        <input id="amount" type="number" step="0.01" placeholder="e.g., 824.82" />
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="primary" id="addBtn">Add</button>
+        <button class="ghost" id="resetForm">Reset</button>
+      </div>
+
+      <hr style="border-color:#30363d;margin:16px 0" />
+
+      <div class="tabs">
+        <div class="tab active" data-tab="filters">Filters</div>
+        <div class="tab" data-tab="xml">XML Editor</div>
+      </div>
+
+      <div class="tab-content active" id="filters-tab">
+        <h2>Filters</h2>
+        <div class="grid-3">
+          <div>
+            <label>View Month</label>
+            <input type="month" id="monthFilter" />
+          </div>
+          <div>
+            <label>Account</label>
+            <select id="accountFilter">
+              <option value="">All</option>
+            </select>
+          </div>
+          <div>
+            <label>Category</label>
+            <select id="categoryFilter">
+              <option value="">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <button class="ghost" id="clearFilters">Clear Filters</button>
+          <button class="danger" id="clearData">Clear All Data</button>
+        </div>
+      </div>
+
+      <div class="tab-content" id="xml-tab">
+        <h2>XML Editor</h2>
+        <p class="hint">Edit your expenses data directly in XML format</p>
+        <textarea id="xmlEditor" class="xml-editor"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="primary" id="updateFromXml">Update from XML</button>
+          <button class="ghost" id="generateXml">Generate XML</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right: Stats, Charts, Table -->
+    <section class="card">
+      <h2>Overview</h2>
+      <div class="stats" id="stats">
+        <div class="stat">
+          <small>Total Expenses</small>
+          <b id="totalOut">₹0.00</b>
+        </div>
+        <div class="stat">
+          <small>Total Income</small>
+          <b id="totalIn">₹0.00</b>
+        </div>
+        <div class="stat">
+          <small>Net</small>
+          <b id="net">₹0.00</b>
+        </div>
+        <div class="stat">
+          <small>Items</small>
+          <b id="items">0</b>
+        </div>
+      </div>
+
+      <div class="charts" style="margin-top:12px">
+        <div class="card">
+          <h2>By Category (Pie)</h2>
+          <canvas id="pieChart" height="220"></canvas>
+        </div>
+        <div class="card">
+          <h2>By Account (Bar)</h2>
+          <canvas id="barChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h2>Transactions</h2>
+        <div class="footer-actions" style="margin-bottom:8px">
+          <button class="ghost" id="exportXml">Export XML</button>
+        </div>
+        <div style="max-height:420px;overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Account</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th style="text-align:right">Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // Storage keys
+    const KEY = "expenses_v1";
+    // State
+    let data = load();
+    let pie, bar;
+    let editingId = null;
+	window.edit = edit;
+	window.remove = remove;
+
+    // Elements
+    const el = (id)=>document.getElementById(id);
+    const type = el("type");
+    const account = el("account");
+    const category = el("category");
+    const desc = el("desc");
+    const amount = el("amount");
+    const date = el("date");
+    const addBtn = el("addBtn");
+    const resetForm = el("resetForm");
+    const xmlEditor = el("xmlEditor");
+
+    const monthFilter = el("monthFilter");
+    const accountFilter = el("accountFilter");
+    const categoryFilter = el("categoryFilter");
+    const clearFilters = el("clearFilters");
+    const clearDataBtn = el("clearData");
+
+    const totalOut = el("totalOut");
+    const totalIn = el("totalIn");
+    const net = el("net");
+    const items = el("items");
+    const tbody = el("tbody");
+
+    const exportXmlBtn = el("exportXml");
+    const updateFromXmlBtn = el("updateFromXml");
+    const generateXmlBtn = el("generateXml");
+    const toast = el("toast");
+    
+    // Tab functionality
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+      });
+    });
+
+    // Toast notification
+    function showToast(message, duration = 3000) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, duration);
+    }
+
+    // Defaults
+    if(!date.value){
+      const now = new Date();
+      date.value = toDateInput(now);
+      monthFilter.value = toMonthInput(now);
+    }
+
+    // Populate filter dropdowns based on data
+    function refreshFilterOptions(){
+      const accounts = Array.from(new Set(data.map(d=>d.account))).sort();
+      const cats = Array.from(new Set(data.map(d=>d.category))).sort();
+
+      const aVal = accountFilter.value;
+      accountFilter.innerHTML = '<option value="">All</option>' + accounts.map(a=>`<option>${a}</option>`).join("");
+      accountFilter.value = aVal || "";
+
+      const cVal = categoryFilter.value;
+      categoryFilter.innerHTML = '<option value="">All</option>' + cats.map(c=>`<option>${c}</option>`).join("");
+      categoryFilter.value = cVal || "";
+    }
+
+    // Load/Save
+    function load(){
+      try{
+        return JSON.parse(localStorage.getItem(KEY)) || [];
+      }catch(e){
+        return [];
+      }
+    }
+    function save(){
+      localStorage.setItem(KEY, JSON.stringify(data));
+    }
+
+    // Add/Update handler
+    addBtn.addEventListener("click", ()=>{
+      const amt = parseFloat(amount.value);
+      if(!desc.value.trim() || !isFinite(amt)){ 
+        showToast("Please enter a description and valid amount");
+        return; 
+      }
+      if(editingId){
+        const index = data.findIndex(d => d.id === editingId);
+        if(index !== -1){
+          data[index].type = type.value.trim() || "Other";
+          data[index].account = account.value.trim() || "Other";
+          data[index].category = category.value.trim() || "Other";
+          data[index].description = desc.value.trim();
+          data[index].amount = round2(amt);
+          data[index].date = date.value || toDateInput(new Date());
+          save();
+          editingId = null;
+          addBtn.textContent = 'Add';
+          resetForm.textContent = 'Reset';
+          desc.value = "";
+          amount.value = "";
+          render();
+          showToast("Expense updated successfully");
+          return;
+        }
+      }
+      // Add new record
+      const entry = {
+        id: crypto.randomUUID(),
+        type: type.value.trim() || "Other",
+        account: account.value.trim() || "Other",
+        category: category.value.trim() || "Other",
+        description: desc.value.trim(),
+        amount: round2(amt),
+        date: date.value || toDateInput(new Date())
+      };
+      data.push(entry);
+      save();
+      desc.value = "";
+      amount.value = "";
+      render();
+      showToast("Expense added successfully");
+    });
+
+    resetForm.addEventListener("click", ()=>{
+      if(editingId){
+        // Cancel editing mode
+        editingId = null;
+        addBtn.textContent = 'Add';
+        resetForm.textContent = 'Reset';
+        desc.value = "";
+        amount.value = "";
+        account.value = "HDFC Bank";
+        category.value = "Recharge/Bills";
+        type.value = "Credit Card";
+        date.value = toDateInput(new Date());
+      } else {
+        // Normal reset
+        account.value = "HDFC Bank";
+        category.value = "Recharge/Bills";
+        type.value = "Credit Card";
+        desc.value = "";
+        amount.value = "";
+        date.value = toDateInput(new Date());
+      }
+    });
+
+    // Delete function
+    function remove(id){
+      if(confirm("Are you sure you want to delete this expense?")) {
+        data = data.filter(d => d.id !== id);
+        save();
+        render();
+        showToast("Expense deleted successfully");
+      }
+    }
+
+    // Edit function
+    function edit(id){
+      const item = data.find(d => d.id === id);
+      if(!item) return;
+      editingId = id;
+      type.value = item.type;
+      account.value = item.account;
+      category.value = item.category;
+      desc.value = item.description;
+      amount.value = item.amount;
+      date.value = item.date;
+      addBtn.textContent = 'Update';
+      resetForm.textContent = 'Cancel';
+    }
+
+    // Filters
+    function filtered(){
+      const mf = monthFilter.value; // "YYYY-MM"
+      const af = accountFilter.value;
+      const cf = categoryFilter.value;
+      return data.filter(d=>{
+        const okMonth = mf ? (d.date || "").startsWith(mf) : true;
+        const okAcc = af ? d.account === af : true;
+        const okCat = cf ? d.category === cf : true;
+        return okMonth && okAcc && okCat;
+      });
+    }
+
+    clearFilters.addEventListener("click", ()=>{
+      monthFilter.value = "";
+      accountFilter.value = "";
+      categoryFilter.value = "";
+      render();
+      showToast("Filters cleared");
+    });
+
+    [monthFilter, accountFilter, categoryFilter].forEach(elm=>{
+      elm.addEventListener("change", render);
+    });
+
+    // Generate XML from current data
+    generateXmlBtn.addEventListener("click", ()=>{
+      xmlEditor.value = generateXml();
+      document.querySelector('.tab[data-tab="xml"]').click();
+      showToast("XML generated from current data");
+    });
+
+    // Update data from XML editor
+    updateFromXmlBtn.addEventListener("click", ()=>{
+      try {
+        const xmlText = xmlEditor.value;
+        if (!xmlText.trim()) {
+          throw new Error("XML editor is empty");
+        }
+        
+        // Parse XML
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+        
+        // Check for parsing errors
+        const parseError = xmlDoc.getElementsByTagName("parsererror");
+        if (parseError.length > 0) {
+          throw new Error("Invalid XML format: " + parseError[0].textContent);
+        }
+        
+        // Get all expense elements
+        const expenses = xmlDoc.getElementsByTagName("expense");
+        if (expenses.length === 0) {
+          throw new Error("No expense data found in XML");
+        }
+        
+        const imported = [];
+        for (let i = 0; i < expenses.length; i++) {
+          const expense = expenses[i];
+          const getValue = (tag) => {
+            const element = expense.getElementsByTagName(tag)[0];
+            return element ? element.textContent : "";
+          };
+          
+          const dateStr = getValue("date");
+          let isoDate = "";
+          if (dateStr) {
+            const d = new Date(dateStr);
+            if (!isNaN(d)) isoDate = toDateInput(d);
+          }
+          
+          if (!isoDate) {
+            const now = new Date();
+            isoDate = toDateInput(now);
+          }
+          
+          const amt = parseFloat(getValue("amount"));
+          const description = getValue("description");
+          
+          if (description && isFinite(amt)) {
+            imported.push({
+              id: getValue("id") || crypto.randomUUID(),
+              type: getValue("type") || "Imported",
+              account: getValue("account") || "Other",
+              category: getValue("category") || guessCategory(description),
+              description: description,
+              amount: round2(amt),
+              date: isoDate
+            });
+          }
+        }
+        
+        if (imported.length === 0) {
+          throw new Error("No valid expense records found in XML");
+        }
+        
+        data = imported;
+        save();
+        render();
+        showToast(`Successfully imported ${imported.length} expenses from XML`);
+      } catch (err) {
+        console.error("XML import error", err);
+        showToast("Import failed: " + err.message, 5000);
+      }
+    });
+
+    // Generate XML from data
+    function generateXml() {
+      let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      xml += '<expenses>\n';
+      
+      data.forEach(expense => {
+        xml += '  <expense>\n';
+        xml += `    <id>${esc(expense.id)}</id>\n`;
+        xml += `    <date>${esc(expense.date)}</date>\n`;
+        xml += `    <type>${esc(expense.type)}</type>\n`;
+        xml += `    <account>${esc(expense.account)}</account>\n`;
+        xml += `    <category>${esc(expense.category)}</category>\n`;
+        xml += `    <description>${esc(expense.description)}</description>\n`;
+        xml += `    <amount>${expense.amount}</amount>\n`;
+        xml += '  </expense>\n';
+      });
+      
+      xml += '</expenses>';
+      return xml;
+    }
+
+    // Export XML
+    exportXmlBtn.addEventListener("click", ()=>{
+      const expenses = filtered();
+      if (expenses.length === 0) {
+        showToast("No data to export");
+        return;
+      }
+      
+      const xml = generateXml();
+      const blob = new Blob([xml], {type: "application/xml;charset=utf-8;"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "expenses.xml";
+      a.click();
+      URL.revokeObjectURL(a.href);
+      showToast("XML exported successfully");
+    });
+
+    // Guess category helper
+    function guessCategory(text){
+      const t = text.toLowerCase();
+      if(t.includes("recharge") || t.includes("bill")) return "Recharge/Bills";
+      if(t.includes("subscription") || t.includes("premium")) return "Subscriptions";
+      if(t.includes("emi") || t.includes("loan")) return "EMI";
+      if(t.includes("fund") || t.includes("ppf") || t.includes("mf") || t.includes("investment")) return "Investments";
+      if(t.includes("salary") || t.includes("cashback") || t.includes("rent")) return "Income";
+      if(t.includes("fan") || t.includes("bulb") || t.includes("trimmer") || t.includes("shop") || t.includes("mobile")) return "Shopping";
+      if(t.includes("taken") || t.includes("fees")) return "Loans Given/Taken";
+      return "Other";
+    }
+
+    // Clear all data
+    clearDataBtn.addEventListener("click", ()=>{
+      if(confirm("Are you sure you want to delete ALL expense data? This cannot be undone.")) {
+        data = [];
+        save();
+        render();
+        showToast("All data cleared");
+      }
+    });
+
+    // Render UI
+    function render(){
+      refreshFilterOptions();
+      const rows = filtered();
+      let out = 0, inc = 0;
+      rows.forEach(r=>{
+        if(r.type==="Income"){ inc += r.amount; } else { out += r.amount; }
+      });
+      totalOut.textContent = "₹" + out.toFixed(2);
+      totalIn.textContent = "₹" + inc.toFixed(2);
+      net.textContent = "₹" + (inc - out).toFixed(2);
+      items.textContent = String(rows.length);
+      tbody.innerHTML = rows.map(r=>`
+        <tr>
+          <td><span class="pill">${r.date}</span></td>
+          <td>${esc(r.type)}</td>
+          <td>${esc(r.account)}</td>
+          <td>${esc(r.category)}</td>
+          <td>${esc(r.description)}</td>
+          <td style="text-align:right">${r.type==="Income" ? "+" : "-"} ₹${r.amount.toFixed(2)}</td>
+          <td style="text-align:right">
+            <button class="ghost" onclick="edit('${r.id}')">Edit</button>
+            <button class="ghost" onclick="remove('${r.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join("");
+      const byCat = groupSum(rows, r=>r.category);
+      const byAcc = groupSum(rows, r=>r.account);
+      drawPie(byCat);
+      drawBar(byAcc);
+    }
+
+    // Sum helper
+    function groupSum(arr, keyFn){
+      const m = new Map();
+      for(const a of arr){
+        const k = keyFn(a);
+        const val = m.get(k) || 0;
+        m.set(k, val + a.amount);
+      }
+      return Array.from(m.entries()).map(([label, value])=>({label, value: round2(value)})).sort((a,b)=>b.value-a.value);
+    }
+
+    // Draw pie chart
+    function drawPie(byCat){
+      const ctx = document.getElementById("pieChart").getContext("2d");
+      const labels = byCat.map(x=>x.label);
+      const values = byCat.map(x=>x.value);
+      const colors = genColors(values.length);
+      if(pie){ pie.destroy(); }
+      pie = new Chart(ctx, {
+        type: "pie",
+        data: { labels, datasets: [{ data: values, backgroundColor: colors, borderColor: "#161b22" }] },
+        options: { plugins: { legend: { labels: { color: "#e6edf3" } } } }
+      });
+    }
+
+    // Draw bar chart
+    function drawBar(byAcc){
+      const ctx = document.getElementById("barChart").getContext("2d");
+      const labels = byAcc.map(x=>x.label);
+      const values = byAcc.map(x=>x.value);
+      if(bar){ bar.destroy(); }
+      bar = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "Amount",
+            data: values,
+            backgroundColor: "rgba(47,129,247,0.6)",
+            borderColor: "rgba(47,129,247,1)",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            x: { ticks: { color:"#e6edf3" }, grid: { color:"#30363d" } },
+            y: { ticks: { color:"#e6edf3" }, grid: { color:"#30363d" }, beginAtZero:true }
+          },
+          plugins:{ legend:{ labels:{ color:"#e6edf3"} } }
+        }
+      });
+    }
+
+    // Utility functions
+    function toDateInput(d){
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      return `${y}-${m}-${day}`;
+    }
+    function toMonthInput(d){
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      return `${y}-${m}`;
+    }
+    function esc(s){ 
+      return String(s).replace(/[&<>"']/g, m => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[m]));
+    }
+    function safe(s){ return String(s).replace(/\n/g," ").trim(); }
+    function round2(n){ return Math.round((n+Number.EPSILON)*100)/100; }
+    function genColors(n){
+      const base = ["#2ea043","#2f81f7","#bf7af0","#f778ba","#ffa657","#db6d28","#a371f7","#56d364","#8d96f6","#ff6b6b","#d29922"];
+      const arr=[];
+      for(let i=0;i<n;i++){ arr.push(base[i%base.length]); }
+      return arr;
+    }
+
+    // Initial render
+    render();
+    refreshFilterOptions();
+  </script>
+</body>
+</html>
