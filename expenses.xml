@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<expenses>
+  <expense>
+    <id>abdfcfe0-178e-41a3-a395-4dce695635d7</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>HDFC Bank</account>
+    <category>Recharge/Bills</category>
+    <description>bsnl sim</description>
+    <amount>599</amount>
+  </expense>
+  <expense>
+    <id>7e162ec1-1e60-4fa6-83fb-bf4782f4c251</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>HDFC Bank</account>
+    <category>Recharge/Bills</category>
+    <description>Airtel Black recharge</description>
+    <amount>824.82</amount>
+  </expense>
+  <expense>
+    <id>e3515ac3-8368-4bff-b551-81fd13841d89</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>HDFC Bank</account>
+    <category>EMI</category>
+    <description>emi repayment full with gst</description>
+    <amount>1783</amount>
+  </expense>
+  <expense>
+    <id>579dc530-cebe-4e84-8245-c6b1bb15c621</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>ICICI Bank</account>
+    <category>EMI</category>
+    <description>Health Insurance emi</description>
+    <amount>4765.18</amount>
+  </expense>
+  <expense>
+    <id>2e9401dd-7dc4-49e8-be94-de5869dba39e</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>ICICI Bank</account>
+    <category>Subscriptions</category>
+    <description>saadhi.com premium subscription</description>
+    <amount>1968</amount>
+  </expense>
+  <expense>
+    <id>81ec977b-545f-4a69-890a-0f06932e9267</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>ICICI Bank</account>
+    <category>Shopping</category>
+    <description>Table fan for shop from pahari electric</description>
+    <amount>2000</amount>
+  </expense>
+  <expense>
+    <id>8898e885-24f8-4eb5-9bf8-7d476cb7a1c7</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>ICICI Bank</account>
+    <category>Loans Given/Taken</category>
+    <description>Baba taken for kolkata markrting + sumita&#39;s sem fees</description>
+    <amount>30000</amount>
+  </expense>
+  <expense>
+    <id>ce7b6032-2239-4ae5-87ef-128932fda48d</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>Kotak Bank</account>
+    <category>Loans Given/Taken</category>
+    <description>Baba taken for kolkata markrting + sumita&#39;s sem fees</description>
+    <amount>42000</amount>
+  </expense>
+  <expense>
+    <id>3151c9b9-339f-4b69-91bf-d8653dd75f7e</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>Bank Of Baroda</account>
+    <category>Loans Given/Taken</category>
+    <description>Baba taken for kolkata markrting + sumita&#39;s sem fees</description>
+    <amount>29000</amount>
+  </expense>
+  <expense>
+    <id>7db54c9d-148d-42a1-b630-9631c469a0f0</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>Axis Bank</account>
+    <category>Shopping</category>
+    <description>led bulb for house and shop</description>
+    <amount>3662</amount>
+  </expense>
+  <expense>
+    <id>2d2a72b4-647f-4393-bf93-e55d7429abfc</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>Axis Bank</account>
+    <category>Shopping</category>
+    <description>trimmer for santu da</description>
+    <amount>648</amount>
+  </expense>
+  <expense>
+    <id>2a387da0-5318-4733-85b1-8f02ccb9a608</id>
+    <date>2025-09-01</date>
+    <type>Credit Card</type>
+    <account>Axis Bank</account>
+    <category>EMI</category>
+    <description>siltu mobile emi payment(5th of 6th emis)</description>
+    <amount>1921.33</amount>
+  </expense>
+  <expense>
+    <id>42efc4c0-6e7a-4e48-8131-6207c0fb0f20</id>
+    <date>2025-09-01</date>
+    <type>Other</type>
+    <account>Other</account>
+    <category>EMI</category>
+    <description>chair emi on snapmint</description>
+    <amount>1460</amount>
+  </expense>
+  <expense>
+    <id>a11098f5-b8c7-4037-8127-67b187f892e3</id>
+    <date>2025-09-01</date>
+    <type>Personal Loan</type>
+    <account>SBI Bank</account>
+    <category>EMI</category>
+    <description>loan for house renovations</description>
+    <amount>5601</amount>
+  </expense>
+  <expense>
+    <id>4748a706-99ba-4a6f-bd72-10956b1c1d32</id>
+    <date>2025-09-01</date>
+    <type>Personal Loan</type>
+    <account>Yes Bank</account>
+    <category>EMI</category>
+    <description>loan for house renovations</description>
+    <amount>11881</amount>
+  </expense>
+  <expense>
+    <id>826efbed-1848-45ca-87f4-0d752659c64e</id>
+    <date>2025-09-01</date>
+    <type>Gold Loans</type>
+    <account>SBI Bank</account>
+    <category>EMI</category>
+    <description>loan for Vellore Hospital expense</description>
+    <amount>5500</amount>
+  </expense>
+  <expense>
+    <id>14a0369e-c50f-41bb-8fdc-90b421055cf6</id>
+    <date>2025-09-01</date>
+    <type>Assets</type>
+    <account>Other</account>
+    <category>Investments</category>
+    <description>Every month investments via gexpensew(deducted from SBI)</description>
+    <amount>3000</amount>
+  </expense>
+  <expense>
+    <id>24eb45f3-75c4-45b1-a24f-35e83a8d5ec8</id>
+    <date>2025-09-01</date>
+    <type>Income</type>
+    <account>SBI Bank</account>
+    <category>Salary</category>
+    <description>salary</description>
+    <amount>39600</amount>
+  </expense>
+  <expense>
+    <id>afbc35a4-d8fb-42e2-9d78-2d800eeab176</id>
+    <date>2025-09-01</date>
+    <type>Income</type>
+    <account>Axis Bank</account>
+    <category>Cashback</category>
+    <description>cashback received for july 2025</description>
+    <amount>681</amount>
+  </expense>
+  <expense>
+    <id>4ecdf923-7783-4f0b-bd3a-87c45d3012d1</id>
+    <date>2025-09-01</date>
+    <type>Income</type>
+    <account>Other</account>
+    <category>Other</category>
+    <description>House Rent for gold loan purpose</description>
+    <amount>5450</amount>
+  </expense>
+  <expense>
+    <id>134569e0-fe58-4d8e-a57a-d270bb592bd7</id>
+    <date>2025-09-01</date>
+    <type>Income</type>
+    <account>Other</account>
+    <category>Loans Given/Taken</category>
+    <description>other people give loan payment (siltu mobile+ santu da trimmer)</description>
+    <amount>2569.33</amount>
+  </expense>
+  <expense>
+    <id>45e858cd-8084-4620-bf5e-2482f3f5a547</id>
+    <date>2025-09-01</date>
+    <type>Income</type>
+    <account>Other</account>
+    <category>Loans Given/Taken</category>
+    <description>father loan repayment /renuwal</description>
+    <amount>101000</amount>
+  </expense>
+</expenses>
